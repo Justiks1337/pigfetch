@@ -1,6 +1,6 @@
-mod arts_file;
+mod ArtsFile;
 mod consts;
-mod art;
+mod Art;
 mod system_info;
 
 fn main() {
