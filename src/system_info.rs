@@ -4,6 +4,7 @@ pub mod system_info {
     use os_info;
     use hostname::get;
     use env::var_os;
+    use std::collections::HashMap;
     use std::ffi::OsString;
     use sys_info::{mem_info};
     use std::process::Command;
@@ -46,6 +47,25 @@ pub mod system_info {
             let disk = Self::get_disk();
 
             SystemInfo { username, os, host, architecture, kernel, uptime, packages_managers, shell, de, wm, cpu, gpu, memory, disk }
+        }
+
+        pub fn to_hashmap(&self) -> HashMap<&str, &Option<String>> {
+            let mut hashmap = HashMap::new();
+            hashmap.insert("username", &self.username);
+            hashmap.insert("os", &self.username);
+            hashmap.insert("host", &self.username);
+            hashmap.insert("architecture", &self.username);
+            hashmap.insert("kernel", &self.username);
+            hashmap.insert("uptime", &self.username);
+            hashmap.insert("packages_managers", &self.username);
+            hashmap.insert("shell", &self.username);
+            hashmap.insert("de", &self.username);
+            hashmap.insert("wm", &self.username);
+            hashmap.insert("cpu", &self.username);
+            hashmap.insert("gpu", &self.username);
+            hashmap.insert("memory", &self.username);
+            hashmap.insert("disk", &self.username);
+            hashmap
         }
 
         fn get_username() -> Option<String> {
