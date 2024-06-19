@@ -4,3 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+sysinfo = "0.30.12"
+os_info = "3.8.2"
+hostname = "0.4.0"
+sys-info = "0.9.1"
+rand = "0.8.5"

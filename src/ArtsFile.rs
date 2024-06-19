@@ -1,31 +1,27 @@
-mod arts_file {
+pub mod arts_file {
     use std::fs::File;
     use std::io::{BufRead, Result};
     use crate::Art::arts::Art;
 
-    struct ArtsFile {
+    pub struct ArtsFile {
         file: File,
-        arts: Vec<Art>,
-        arts_amount: i32,
+        pub arts: Vec<Art>,
+        pub arts_amount: u8,
     }
 
     impl ArtsFile {
-        fn new() -> Self {
+        pub fn new() -> Self {
             let mut file = File::open("arts.txt")?;
             let mut arts: Vec<Art> = Vec::new();
-            let mut arts_amount: i32 = 0;
+            let mut arts_amount: u8 = 0;
 
-            ArtsFile { file, arts, arts_amount }
+            ArtsFile { file, arts, arts_amount}
         }
 
-        fn read_file(&self) {
+        fn read_file(&mut self) {
             let file_clone = self.file.try_clone().expect("Failed load arts.txt");
-            let mut reader = BufRead::new(file_clone);
-            for line in reader.lines() {
-                let s = String::from(line);
-
-                if s.chars().nth(0) == "-" {}
-            }
+            let reader = BufRead::new(file_clone);
+            self.read_art(reader);
         }
 
         fn read_art(&mut self, lines: Result<String>) {
