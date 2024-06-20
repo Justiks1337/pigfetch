@@ -1,6 +1,6 @@
 pub mod arts {
     pub struct Art {
-        art_lines: [String; 8]
+        pub art_lines: [String; 8]
     }
 
     impl Art {
@@ -9,7 +9,7 @@ pub mod arts {
             Art {art_lines}
         }
 
-        pub fn add_line(&mut self, line: String, index: i8) {
+        pub fn add_line(&mut self, line: String, index: usize) {
             self.art_lines[index] = line;
         }
     }

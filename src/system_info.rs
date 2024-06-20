@@ -1,5 +1,5 @@
 pub mod system_info {
-    use std::{env, io};
+    use std::{env};
     use sysinfo::{System};
     use os_info;
     use hostname::get;
@@ -32,7 +32,7 @@ pub mod system_info {
             let sys_info = System::new();
 
             let username = Self::get_username();
-            let os = Self::get_os(&sys_info);
+            let os = Self::get_os();
             let host = Self::get_host();
             let architecture = Self::get_architecture();
             let kernel = Self::get_kernel();
@@ -72,19 +72,21 @@ pub mod system_info {
             return var_os("USER").and_then(|os_string: OsString| os_string.into_string().ok());
         }
 
-        fn get_os(sys_info: &System) -> Option<String> {
-            return format!("{} {}", sys_info.os_type().to_string(), sys_info.version());
+        fn get_os() -> Option<String> {
+            let osinfo = os_info::get();
+            if Some(&osinfo).is_some() {
+                format!("{} {}", osinfo.os_type().to_string(), osinfo.version());
+            } None
         }
 
         fn get_host() -> Option<String> {
-            return get().and_then(|result: Result<OsString, io::Error>| result.into_string().ok())
+            return get().ok().and_then(|result| result.into_string().ok())
         }
 
         fn get_architecture() -> Option<String> {
-            if let Some(arch) = os_info::get().architecture().unwrap().to_string() {
-                arch
-            }
-            None
+            if let Some(arch) = os_info::get().architecture() {
+                Some(arch.to_string());
+            } None
         }
 
         fn get_kernel() -> Option<String> {
@@ -92,8 +94,7 @@ pub mod system_info {
 
             if output.status.success() {
                 Some(String::from_utf8_lossy(&output.stdout).to_string());
-            }
-            None
+            } None
         }
 
         fn get_uptime() -> Option<String> {
@@ -101,8 +102,7 @@ pub mod system_info {
 
             if output.status.success() {
                 Some(String::from_utf8_lossy(&output.stdout).to_string());
-            }
-            None
+            } None
         }
 
         fn get_package_managers() -> Option<String> { None }
@@ -118,17 +118,17 @@ pub mod system_info {
         fn get_wm() -> Option<String> { None }
 
         fn get_cpu(sys_info: &System) -> Option<String> {
-            if let Some(cpu) = sys_info.global_cpu_info().name().to_string() {
-                return cpu
-            }
-            None
+            let cpu_name = sys_info.global_cpu_info().name().to_string();
+            if !cpu_name.is_empty() {
+                return Some(cpu_name);
+            } None
         }
 
         fn get_gpu() -> Option<String> { None }
 
         fn get_memory() -> Option<String> {
             for info in mem_info() {
-                info.try_into().ok().to_string()
+                Some(info.avail.to_string());
             }
             None
         }
