@@ -4,10 +4,11 @@ pub mod system_info {
     use os_info;
     use hostname::get;
     use env::var_os;
-    use std::collections::HashMap;
+    use std::collections::{BTreeMap, HashMap};
     use std::ffi::OsString;
     use sys_info::{mem_info};
     use std::process::Command;
+    use indexmap::IndexMap;
 
 
     pub struct SystemInfo {
@@ -16,6 +17,7 @@ pub mod system_info {
         pub host: Option<String>,
         pub architecture: Option<String>,
         pub kernel: Option<String>,
+        pub desktop: Option<String>,
         pub uptime: Option<String>,
         pub packages_managers: Option<String>,
         pub shell: Option<String>,
@@ -36,6 +38,7 @@ pub mod system_info {
             let host = Self::get_host();
             let architecture = Self::get_architecture();
             let kernel = Self::get_kernel();
+            let desktop = Self::get_desktop();
             let uptime = Self::get_uptime();
             let packages_managers = Self::get_package_managers();
             let shell = Self::get_shell();
@@ -46,25 +49,26 @@ pub mod system_info {
             let memory = Self::get_memory();
             let disk = Self::get_disk();
 
-            SystemInfo { username, os, host, architecture, kernel, uptime, packages_managers, shell, de, wm, cpu, gpu, memory, disk }
+            SystemInfo { username, os, host, architecture, kernel, desktop, uptime, packages_managers, shell, de, wm, cpu, gpu, memory, disk }
         }
 
-        pub fn to_hashmap(&self) -> HashMap<&str, &Option<String>> {
-            let mut hashmap = HashMap::new();
-            hashmap.insert("username", &self.username);
-            hashmap.insert("os", &self.username);
-            hashmap.insert("host", &self.username);
-            hashmap.insert("architecture", &self.username);
-            hashmap.insert("kernel", &self.username);
-            hashmap.insert("uptime", &self.username);
-            hashmap.insert("packages_managers", &self.username);
-            hashmap.insert("shell", &self.username);
-            hashmap.insert("de", &self.username);
-            hashmap.insert("wm", &self.username);
-            hashmap.insert("cpu", &self.username);
-            hashmap.insert("gpu", &self.username);
-            hashmap.insert("memory", &self.username);
-            hashmap.insert("disk", &self.username);
+        pub fn to_hashmap(&self) -> IndexMap<&str, &Option<String>> {
+            let mut hashmap = IndexMap::new();
+            hashmap.insert("Username", &self.username);
+            hashmap.insert("Os", &self.os);
+            hashmap.insert("Host", &self.host);
+            hashmap.insert("Architecture", &self.architecture);
+            hashmap.insert("Kernel", &self.kernel);
+            hashmap.insert("Desktop", &self.desktop);
+            hashmap.insert("Uptime", &self.uptime);
+            hashmap.insert("Packages_managers", &self.packages_managers);
+            hashmap.insert("Shell", &self.shell);
+            hashmap.insert("De", &self.de);
+            hashmap.insert("Wm", &self.wm);
+            hashmap.insert("Cpu", &self.cpu);
+            hashmap.insert("Gpu", &self.gpu);
+            hashmap.insert("Memory", &self.memory);
+            hashmap.insert("Disk", &self.disk);
             hashmap
         }
 
@@ -75,8 +79,8 @@ pub mod system_info {
         fn get_os() -> Option<String> {
             let osinfo = os_info::get();
             if Some(&osinfo).is_some() {
-                format!("{} {}", osinfo.os_type().to_string(), osinfo.version());
-            } None
+                return Some(format!("{} {}", osinfo.os_type().to_string(), osinfo.version()));
+            } return None
         }
 
         fn get_host() -> Option<String> {
@@ -85,7 +89,7 @@ pub mod system_info {
 
         fn get_architecture() -> Option<String> {
             if let Some(arch) = os_info::get().architecture() {
-                Some(arch.to_string());
+                return Some(arch.to_string());
             } None
         }
 
@@ -93,15 +97,19 @@ pub mod system_info {
             let output = Command::new("uname").arg("-r").output().expect("fail");
 
             if output.status.success() {
-                Some(String::from_utf8_lossy(&output.stdout).to_string());
+                return Some(String::from_utf8_lossy(&output.stdout).replace("\n", "").to_string());
             } None
+        }
+
+        fn get_desktop() -> Option<String> {
+            return var_os("XDG_SESSION_DESKTOP").and_then(|os_string: OsString| os_string.into_string().ok())
         }
 
         fn get_uptime() -> Option<String> {
             let output = Command::new("uptime").output().expect("fail");
 
             if output.status.success() {
-                Some(String::from_utf8_lossy(&output.stdout).to_string());
+                return Some(String::from_utf8_lossy(&output.stdout).replace("\n", "").to_string());
             } None
         }
 
@@ -128,9 +136,10 @@ pub mod system_info {
 
         fn get_memory() -> Option<String> {
             for info in mem_info() {
-                Some(info.avail.to_string());
-            }
-            None
+                let available_memory = info.avail/1024/1024;
+                let total = info.total/1024/1024;
+                return Some(format!("{}Gi/{}Gi", available_memory.to_string(), total.to_string()));
+            } None
         }
 
         fn get_disk() -> Option<String> { None }

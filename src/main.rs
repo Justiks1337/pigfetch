@@ -9,23 +9,31 @@ mod system_info;
 fn main() {
     let mut artfile = arts_file::arts_file::ArtsFile::new();
     &artfile.read_file();
-    println!("{}", artfile.arts_amount);
     let art_number:usize = rand::thread_rng().gen_range(0..artfile.arts_amount);
     let art: [String; 8] = artfile.arts[art_number].art_lines.clone();
     let binding = system_info::system_info::SystemInfo::new();
     let mut system_info = binding.to_hashmap().into_iter();
+    println!("\n");
     for line in art {
-        let Some((attr, &ref value)) = system_info.next() else { todo!() };
-        if value.clone().unwrap().is_empty() {
-            continue
-        }
-        println!("{} {}: {}", line, attr, value.clone().unwrap().to_string());
+        let (attr, &ref value_option) = loop {
+            if let Some((attr, value)) = system_info.next() {
+                if value.is_some() {
+                    break (attr, value);
+                }
+            } else {
+                todo!();
+            }
+        };
+
+        let value = value_option.clone().unwrap();
+        println!("    \x1B[35m\x1B[1m{} \x1B[0m \x1B[35m\x1B[1m{}:\x1B[0m {}", line, attr, value.clone().to_string());
     }
 
     for (attr, &ref val) in system_info {
-        if val.clone().unwrap().is_empty() {
+        if val.clone().is_none() {
             continue
         }
-        println!("{}: {}", attr, val.clone().unwrap().to_string());
+        println!("    \x1B[35m\x1B[1m{}:\x1B[0m {}", attr, val.clone().unwrap().to_string());
     }
+    println!("\n");
 }

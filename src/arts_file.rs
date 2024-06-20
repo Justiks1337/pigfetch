@@ -33,8 +33,7 @@ pub mod arts_file {
                         self.arts.push(art);
                         index = 0;
                         self.arts_amount += 1;
-                        self.read_art(lines);
-                        return;
+                        art = Art::new()
                     } else {
                         art.add_line(line, index);
                         index += 1;
