@@ -1,0 +1,12 @@
+Package: pigfetch
+Version: 1.0-1
+Architecture: amd64
+Maintainer: Justiks <dubkovmacsim@yandex.ru>
+Installed-Size: 789
+Depends: libc6 (>= 2.34), libgcc-s1 (>= 4.2)
+Section: justiks
+Priority: optional
+Multi-Arch: foreign
+Homepage: https://github.com/Justiks1337/pigfetch
+Description: Fetch with... PIGS!
+ Simple fetch with pigs arts.

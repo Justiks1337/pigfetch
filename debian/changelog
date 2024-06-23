@@ -1,0 +1,5 @@
+pigfetch (1.0-1) UNRELEASED; urgency=medium
+
+  * Initial release. (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- <dubkovmacsim@yandex.ru>  Sun, 23 Jun 2024 14:15:17 +0300
