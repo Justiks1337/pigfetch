@@ -1,0 +1,19 @@
+Package: pigfetch
+Architecture: amd64
+Version: 1.0-1
+Multi-Arch: foreign
+Priority: optional
+Section: justiks
+Maintainer: Justiks <dubkovmacsim@yandex.ru>
+Installed-Size: 789
+Depends: libc6 (>= 2.34), libgcc-s1 (>= 4.2)
+Filename: deb/binary-amd64/pigfetch_1.0-1_amd64.deb
+Size: 308992
+MD5sum: aed7cb1121c504af6f5d1dfddfd02f5c
+SHA1: eca214000ed591e5ec4a58c254bc1f0214d5abac
+SHA256: 189d529165451dfe26cf46d1efb6e17320ff651165d99322c06ae07d9950a3f0
+SHA512: 7ed1410d7387f894bcde00a5a213122222a84dacd52179b8c203ccf8992b754409a984146facd5e7fb5d391257b1043c37280eccf31421bac5389224b16af43b
+Homepage: https://github.com/Justiks1337/pigfetch
+Description: Fetch with... PIGS!
+ Simple fetch with pigs arts.
+
